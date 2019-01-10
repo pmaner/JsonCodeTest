@@ -12,6 +12,11 @@ namespace JsonCodeTest
 {
     class Program
     {
+        /// <summary>
+        /// Read a json file and print cat names showing of understanding of tech
+        /// This is written on .net Core so feel free to run it on a unix system
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             // Catch everything

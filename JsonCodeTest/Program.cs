@@ -6,6 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Diagnostics;
 
 namespace JsonCodeTest
 {
@@ -13,6 +14,8 @@ namespace JsonCodeTest
     {
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
             var errors = new List<string>();
             var directory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var testFile = Path.Combine(directory, "TestData/Pet.json");
@@ -78,6 +81,11 @@ namespace JsonCodeTest
                 foreach (var error in errors)
                     Console.WriteLine($"- {error}");
             }
+        }
+
+        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Debug.WriteLine($"ERROR - UnHandled Domain Exception {(e.ExceptionObject as Exception).Message}");
         }
     }
 }

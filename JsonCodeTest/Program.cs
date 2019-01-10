@@ -14,9 +14,11 @@ namespace JsonCodeTest
     {
         static void Main(string[] args)
         {
+            // Catch everything
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
             var errors = new List<string>();
+
+            // Make sure our file exists and error nicely
             var directory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var testFile = Path.Combine(directory, "TestData/Pet.json");
             if (!File.Exists(testFile))
@@ -26,13 +28,15 @@ namespace JsonCodeTest
             }
 
             // load json into strongly typed collection
+            // Show that settigns can be set
             var settings = new JsonSerializerSettings();
             settings.NullValueHandling = NullValueHandling.Ignore;
             settings.MissingMemberHandling = MissingMemberHandling.Error;
+            // catch and collect errors in the parsing
             settings.Error = delegate (object sender, Newtonsoft.Json.Serialization.ErrorEventArgs a)
             {
                 errors.Add(a.ErrorContext.Error.Message);
-                a.ErrorContext.Handled = true;
+                a.ErrorContext.Handled = true; 
             };
 
             List<Owner> owners = null;
@@ -46,6 +50,7 @@ namespace JsonCodeTest
                 Console.Error.WriteLine($"ERROR: {ex.Message}");
             }
 
+            // write out our cats if we loaded anything
             if (owners != null)
             {
                 WriteCatOwners(owners, Gender.Male);
@@ -59,12 +64,20 @@ namespace JsonCodeTest
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// As the code for both the print out is amost the same, so just make it
+        /// a fuction
+        /// </summary>
+        /// <param name="owners"></param>
+        /// <param name="gender"></param>
         static private void WriteCatOwners(List<Owner> owners, Gender gender)
         {
             Console.WriteLine(gender);
             var cats = owners.Where(o => (o.Gender == gender) && (o.Pets != null))
                                            .SelectMany(o => o.Pets.Where(p => p.Species == Species.Cat));
-            foreach (var cat in cats.OrderBy(c => c.Name))
+
+            // linq is not executed until enumerated so adding the order later just composes what will run
+            foreach (var cat in cats.OrderBy(c => c.Name)) 
                 Console.WriteLine($"- {cat.Name}");
         }
 
@@ -83,6 +96,12 @@ namespace JsonCodeTest
             }
         }
 
+        /// <summary>
+        /// Catch exceptions anywhere in the current .net domain and handle them in some
+        /// consistent way. Would usually log to some file or database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Debug.WriteLine($"ERROR - UnHandled Domain Exception {(e.ExceptionObject as Exception).Message}");

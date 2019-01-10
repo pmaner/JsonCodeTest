@@ -12,4 +12,6 @@ It shows
 - exception catching
 - a bit of async
 - and use of git for source control
+- using libraries
+- using NuGET
 - etc

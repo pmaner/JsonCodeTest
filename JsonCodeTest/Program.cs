@@ -35,7 +35,8 @@ namespace JsonCodeTest
             List<Owner> owners = null;
             try
             {
-                owners = JsonConvert.DeserializeObject<List<Owner>>(File.ReadAllText(testFile), settings);
+                // I know this does nothing useful here, its just an example of Async
+                owners = Task.Run( () => JsonConvert.DeserializeObject<List<Owner>>(File.ReadAllText(testFile), settings)).Result;
             }
             catch (Exception ex)
             {

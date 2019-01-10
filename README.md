@@ -14,4 +14,5 @@ It shows
 - and use of git for source control
 - using libraries
 - using NuGET
+- almost forgot, it shows using .net.Core (the project should run on unix)
 - etc
